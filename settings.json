@@ -1,0 +1,32 @@
+{
+    "window_width":1280,
+    "window_height":720,
+    "fullscreen":true,
+    "fps":30,
+    "camera_port":0,
+    "confidence":15,
+    "keypoints":[0,4,5,8,9,12,13,16,17,20],
+    "model_complexity":1,
+    "min_detection_confidence":0.5,
+    "min_tracking_confidence":0.5,
+    "font_color":[235,57,45],
+    "font_thickness":2,
+    "font_scale":1,
+    "color_swatches":{
+        "red":[0,0,255],
+        "orange":[0,153,255],
+        "yellow":[0,255,255],
+        "green":[0,255,0],
+        "cyan":[255,255,0],
+        "blue":[255,0,0],
+        "purple":[255,0,123],
+        "pink":[255,0,255],
+        "black":[0,0,0],
+        "white":[255,255,255]
+    },
+    "brush_size":[5,10,15,20,25,30],
+    "command_hand":"Left",
+    "brush_hand":"Right",
+    "fpsfilter":0.95,
+    "coloured_background":false
+}
