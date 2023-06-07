@@ -28,3 +28,16 @@ class MediapipeHands:
                         singlehand.append((int(landmark.x*width),int(landmark.y*height)))
                     allhands.append(singlehand)
             return allhands,handstype
+
+def findError(knowngestures,unknownMatrix,keypoints):
+    error=9999999
+    idx=-1
+    for i in range(len(knowngestures)):
+        currenterror=0
+        for rows in keypoints:
+            for columns in keypoints:
+                currenterror+=abs(knowngestures[i][rows][columns]-unknownMatrix[rows][columns])
+        if currenterror<error:
+            error=currenterror
+            idx=i
+    return error,idx
