@@ -64,6 +64,14 @@ class MediapipeHands:
                     cv2.circle(frame,(i[0],i[1]),3,(255,255,125),-1)
         return frame
 
+def findDistances(handData):
+    distMatrix=np.zeros([len(handData),len(handData)],dtype=np.float32)
+    palmSize=((handData[0][0]-handData[9][0])**2+(handData[0][1]-handData[9][1])**2)**.5
+    for rows in range(0,len(handData)):
+        for columns in range(0,len(handData)):
+            distMatrix[rows][columns]=(((handData[rows][0]-handData[columns][0])**2+(handData[rows][1]-handData[columns][1])**2)**.5)/palmSize
+    return distMatrix
+
 def findError(knowngestures,unknownMatrix,keypoints):
     error=9999999
     idx=-1
