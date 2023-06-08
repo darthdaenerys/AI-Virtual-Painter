@@ -1,7 +1,8 @@
 import cv2
 import os
 import pickle
-from handTracker import findDistances,MediapipeHands
+from handTracker import findDistances,findError,MediapipeHands
+import numpy as np
 import json
 import time
 import sys
@@ -67,3 +68,28 @@ while train and cntr!=n:
     if cv2.waitKey(1) & 0xff==ord('q'):
         train=False
         run=False
+
+while run:
+    _,frame=camera.read()
+    frame=cv2.flip(frame,1)
+    frameRGB=cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+    handlandmarks=findhands.handsdata(frameRGB)
+    if len(handlandmarks[0])>0:
+        for hand in handlandmarks[0]:
+            distMatrix=findDistances(hand)
+            error,idx=findError(knowngestures,distMatrix, data['keypoints'])
+            if error<threshold and idx!=-1:
+                uppercoord=[9999,9999]
+                for i in hand:
+                    if i[1]<uppercoord[1]:
+                        uppercoord=list(i)
+                uppercoord[1]-=30
+                uppercoord[0]-=30
+                cv2.putText(frame,f'{gesturenames[idx]}',uppercoord,cv2.FONT_HERSHEY_SIMPLEX,1,(235,57,45),2)
+
+        frame=findhands.drawLandmarks(frame, handlandmarks[0],False)
+    cv2.imshow('Gesture Recognition',frame)
+    if cv2.waitKey(5) & 0xff==ord('q'):
+        run=False
+cv2.destroyAllWindows()
+camera.release()
