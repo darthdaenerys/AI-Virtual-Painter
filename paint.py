@@ -118,3 +118,49 @@ def saveimage():
         filename+=f'{time.localtime()[i]}'
     cv2.imwrite(os.path.join('pictures',filename+f'.jpeg'),frame)
     savetime=time.time()
+
+def mouseclick(event,xpos,ypos,*args,**kwargs):
+    global color,brush_size,run,prevcanvas
+    if event==cv2.EVENT_LBUTTONDOWN:
+        if ypos>0 and ypos<60:
+            if xpos>0 and xpos<settings['window_width']//10:
+                color='red'
+            elif xpos>settings['window_width']//10 and xpos<2*settings['window_width']//10:
+                color='orange'
+            elif xpos>2*settings['window_width']//10 and xpos<3*settings['window_width']//10:
+                color='yellow'
+            elif xpos>3*settings['window_width']//10 and xpos<4*settings['window_width']//10:
+                color='green'
+            elif xpos>4*settings['window_width']//10 and xpos<5*settings['window_width']//10:
+                color='cyan'
+            elif xpos>5*settings['window_width']//10 and xpos<6*settings['window_width']//10:
+                color='blue'
+            elif xpos>6*settings['window_width']//10 and xpos<7*settings['window_width']//10:
+                color='purple'
+            elif xpos>7*settings['window_width']//10 and xpos<8*settings['window_width']//10:
+                color='pink'
+            elif xpos>8*settings['window_width']//10 and xpos<9*settings['window_width']//10:
+                color='white'
+            else:
+                color='black'
+        if xpos>0 and xpos<60 and ypos>60 and ypos<settings['window_height']-60:
+            diff=(settings['window_height']-120)//6
+            if ypos>60 and ypos<60+diff:
+                brush_size=5
+            elif ypos>60+diff and ypos<60+2*diff:
+                brush_size=10
+            elif ypos>60+2*diff and ypos<60+3*diff:
+                brush_size=15
+            elif ypos>60+3*diff and ypos<60+4*diff:
+                brush_size=20
+            elif ypos>60+4*diff and ypos<60+5*diff:
+                brush_size=25
+            else:
+                brush_size=30
+        if xpos>0 and xpos<int(3.3*settings['window_width']//4) and ypos>settings['window_height']-60:
+            if xpos>0 and xpos<int(3.15*settings['window_width']//6):
+                clearcanvas()
+            elif xpos>int(3.15*settings['window_width']//6) and xpos<int(3.4*settings['window_width']//5):
+                saveimage()
+            else:
+                run=False
