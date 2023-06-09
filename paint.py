@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import os
-from handTracker import MediapipeHands
+from handTracker import findDistances,findError,MediapipeHands
 import json
 import pickle
 import time
@@ -50,3 +50,14 @@ findhands=MediapipeHands(
 threshold=settings['confidence']
 keypoints=settings['keypoints']
 color_idx=['red','orange','yellow','green','cyan','blue','purple','pink','white','black']
+
+def convert_toBNW(frame):
+    frame=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+    frame=cv2.cvtColor(frame,cv2.COLOR_GRAY2BGR)
+    objectFrame=np.zeros([settings['window_height'],settings['window_width'],3],dtype=np.uint8)
+    frame=cv2.addWeighted(frame,.8,objectFrame,.9,0)
+    return frame
+
+def clearcanvas():
+    global prevcanvas
+    prevcanvas=np.zeros([settings['window_height'],settings['window_width'],3],dtype=np.uint8)
