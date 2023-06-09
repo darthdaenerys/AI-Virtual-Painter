@@ -2,7 +2,6 @@ import cv2
 import os
 import pickle
 from handTracker import findDistances,findError,MediapipeHands
-import numpy as np
 import json
 import time
 import sys
@@ -93,3 +92,13 @@ while run:
         run=False
 cv2.destroyAllWindows()
 camera.release()
+
+if choice.lower()!='y':
+    choice=input('Save the gesture data? (Y/n): ')
+    if choice.lower()=='y':
+        if os.path.exists('gesture_data.pkl'):
+            print('Overwritten existing file')
+        with open('gesture_data.pkl','wb') as f:
+            pickle.dump(gesturenames,f)
+            pickle.dump(knowngestures,f)
+            print('Data saved succesfully!')
