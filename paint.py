@@ -110,3 +110,11 @@ def preprocess(frame,drawState,fps):
     cv2.putText(frame,f'Eraser',(int(2.74*settings['window_width']//3),40),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),2)
     cv2.putText(frame,f'{int(fps)} FPS',(int(3.45*settings['window_width']//4),settings['window_height']-20),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),2)
     return frame
+
+def saveimage():
+    global savetime
+    filename=''
+    for i in range(6):
+        filename+=f'{time.localtime()[i]}'
+    cv2.imwrite(os.path.join('pictures',filename+f'.jpeg'),frame)
+    savetime=time.time()
