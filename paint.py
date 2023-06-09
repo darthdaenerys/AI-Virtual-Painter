@@ -61,3 +61,52 @@ def convert_toBNW(frame):
 def clearcanvas():
     global prevcanvas
     prevcanvas=np.zeros([settings['window_height'],settings['window_width'],3],dtype=np.uint8)
+
+def preprocess(frame,drawState,fps):
+    frameleft=frame[60:settings['window_height']-60,:80]
+    objectframeleft=np.zeros([settings['window_height']-120,80,3],dtype=np.uint8)
+    frameleft=cv2.addWeighted(frameleft,.6,objectframeleft,.9,0)
+    frame[60:settings['window_height']-60,:80]=frameleft
+    framebottom=frame[settings['window_height']-60:,:]
+    objectframebottom=np.zeros([60,settings['window_width'],3],dtype=np.uint8)
+    framebottom=cv2.addWeighted(framebottom,.6,objectframebottom,.9,0)
+    frame[settings['window_height']-60:,:]=framebottom
+    cv2.line(frame,(0,60),(settings['window_width'],60),(10,10,10),2)
+    cntr=0
+    for x in range(0,settings['window_width'],settings['window_width']//10):
+        pt1=(x,0)
+        pt2=(x+settings['window_width'],0)
+        pt4=(x,60)
+        pt3=(x+settings['window_width'],60)
+        cv2.fillPoly(frame,[np.array([pt1,pt2,pt3,pt4])],settings['color_swatches'][color_idx[cntr]])
+        cntr+=1
+    cntr=0
+    for x in range((settings['window_height']-120)//6,settings['window_height']-60,(settings['window_height']-120)//6):
+        cv2.circle(frame,(40,x),settings['brush_size'][cntr],(255,255,255),-1)
+        cntr+=1
+    cv2.line(frame,(80,60),(80,settings['window_height']-60),(10,10,10),1)
+    cv2.line(frame,(0,settings['window_height']-60),(int(3.4*settings['window_width']//5),settings['window_height']-60),(10,10,10),1)
+    cv2.putText(frame,f'{drawState}',(20,settings['window_height']-20),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),2)
+    cv2.line(frame,(settings['window_width']//8,settings['window_height']-60),(settings['window_width']//8,settings['window_height']),(10,10,10),1)
+    pt1=(settings['window_width']//7,settings['window_height']-50)
+    pt2=(2*settings['window_width']//7,settings['window_height']-50)
+    pt3=(2*settings['window_width']//7,settings['window_height']-10)
+    pt4=(settings['window_width']//7,settings['window_height']-10)
+    cv2.fillPoly(frame,[np.array([pt1,pt2,pt3,pt4])],settings['color_swatches'][color])
+    if color=='black':
+        cv2.putText(frame,f'Eraser',(int(1.22*settings['window_width']//7),settings['window_height']-20),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),2)
+    cv2.line(frame,(int(1.8*settings['window_width']//6),settings['window_height']-60),(int(1.8*settings['window_width']//6),settings['window_height']),(10,10,10),1)
+    if brush_size==30:
+        cv2.circle(frame,(int(2*settings['window_width']//6),settings['window_height']-30),brush_size-4,(255,255,255),-1)
+    else:
+        cv2.circle(frame,(int(2*settings['window_width']//6),settings['window_height']-30),brush_size,(255,255,255),-1)
+    cv2.line(frame,(int(2.2*settings['window_width']//6),settings['window_height']-60),(int(2.2*settings['window_width']//6),settings['window_height']),(10,10,10),1)
+    cv2.putText(frame,f'C to clear',(int(2.3*settings['window_width']//6),settings['window_height']-20),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),2)
+    cv2.line(frame,(int(3.15*settings['window_width']//6),settings['window_height']-60),(int(3.15*settings['window_width']//6),settings['window_height']),(10,10,10),1)
+    cv2.putText(frame,f'S to save',(int(3.25*settings['window_width']//6),settings['window_height']-20),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),2)
+    cv2.line(frame,(int(3.4*settings['window_width']//5),settings['window_height']-60),(int(3.4*settings['window_width']//5),settings['window_height']),(10,10,10),1)
+    cv2.putText(frame,f'Q to quit',(int(3.48*settings['window_width']//5),settings['window_height']-20),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),2)
+    cv2.line(frame,(int(3.3*settings['window_width']//4),settings['window_height']-60),(int(3.3*settings['window_width']//4),settings['window_height']),(10,10,10),1)
+    cv2.putText(frame,f'Eraser',(int(2.74*settings['window_width']//3),40),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),2)
+    cv2.putText(frame,f'{int(fps)} FPS',(int(3.45*settings['window_width']//4),settings['window_height']-20),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),2)
+    return frame
