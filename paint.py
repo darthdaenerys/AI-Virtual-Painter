@@ -1,7 +1,11 @@
 import cv2
 import numpy as np
+import os
+from handTracker import MediapipeHands
 import json
+import pickle
 import time
+import sys
 
 f=open('settings.json')
 settings=json.load(f)
@@ -29,3 +33,20 @@ fpsfilter=settings['fpsfilter']
 starttime=time.time()
 savetime=-1
 run=True
+
+if os.path.exists('gesture_data.pkl'):
+    with open('gesture_data.pkl','rb') as f:
+        gesturenames=pickle.load(f)
+        knowngestures=pickle.load(f)
+else:
+    print('No gesture data found')
+    sys.exit()
+
+findhands=MediapipeHands(
+    model_complexity=settings['model_complexity'],
+    min_detection_confidence=settings['min_detection_confidence'],
+    min_tracking_confidence=settings['min_tracking_confidence']
+)
+threshold=settings['confidence']
+keypoints=settings['keypoints']
+color_idx=['red','orange','yellow','green','cyan','blue','purple','pink','white','black']
