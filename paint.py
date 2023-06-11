@@ -164,3 +164,27 @@ def mouseclick(event,xpos,ypos,*args,**kwargs):
                 saveimage()
             else:
                 run=False
+
+cv2.setMouseCallback('OpenCV Paint',mouseclick)
+
+while run:
+    dt=time.time()-starttime
+    starttime=time.time()
+    currentfps=1/dt
+    fps=fps*fpsfilter+(1-fpsfilter)*currentfps
+    _,frame=camera.read()
+    frame=cv2.flip(frame,1)
+    if settings['coloured_background']==False:
+        frame=convert_toBNW(frame)
+    canvas=prevcanvas
+    handlandmarks,handstype=findhands.handsdata(frame)
+    for idx,handtype in enumerate(handstype):
+        if handtype==settings['command_hand']:
+            distMatrix=findDistances(handlandmarks[idx])
+            error,idx2=findError(knowngestures,distMatrix, keypoints)
+            if error<threshold and idx!=-1:
+                drawState=gesturenames[idx2]
+            else:
+                drawState='Standby'
+            frame=findhands.drawLandmarks(frame, [handlandmarks[idx]],False)
+            break
