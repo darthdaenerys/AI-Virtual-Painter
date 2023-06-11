@@ -188,3 +188,43 @@ while run:
                 drawState='Standby'
             frame=findhands.drawLandmarks(frame, [handlandmarks[idx]],False)
             break
+    for idx,handtype in enumerate(handstype):
+        if handtype==settings['brush_hand']:
+            cv2.circle(frame,(handlandmarks[idx][8][0],handlandmarks[idx][8][1]),brush_size,settings['color_swatches'][color],-1)
+            #! color swatches logic
+            if handlandmarks[idx][8][1]<60:
+                if handlandmarks[idx][8][0]>0 and handlandmarks[idx][8][0]<settings['window_width']//10:
+                    color='red'
+                elif handlandmarks[idx][8][0]>settings['window_width']//10 and handlandmarks[idx][8][0]<2*settings['window_width']//10:
+                    color='orange'
+                elif handlandmarks[idx][8][0]>2*settings['window_width']//10 and handlandmarks[idx][8][0]<3*settings['window_width']//10:
+                    color='yellow'
+                elif handlandmarks[idx][8][0]>3*settings['window_width']//10 and handlandmarks[idx][8][0]<4*settings['window_width']//10:
+                    color='green'
+                elif handlandmarks[idx][8][0]>4*settings['window_width']//10 and handlandmarks[idx][8][0]<5*settings['window_width']//10:
+                    color='cyan'
+                elif handlandmarks[idx][8][0]>5*settings['window_width']//10 and handlandmarks[idx][8][0]<6*settings['window_width']//10:
+                    color='blue'
+                elif handlandmarks[idx][8][0]>6*settings['window_width']//10 and handlandmarks[idx][8][0]<7*settings['window_width']//10:
+                    color='purple'
+                elif handlandmarks[idx][8][0]>7*settings['window_width']//10 and handlandmarks[idx][8][0]<8*settings['window_width']//10:
+                    color='pink'
+                elif handlandmarks[idx][8][0]>8*settings['window_width']//10 and handlandmarks[idx][8][0]<9*settings['window_width']//10:
+                    color='white'
+                else:
+                    color='black'
+    frame=cv2.addWeighted(frame,.6,canvas,1,1)
+    frame=preprocess(frame, drawState,fps)
+    prevcanvas=canvas
+    if time.time()-savetime<=1:
+        cv2.putText(frame,f'Image saved succesfully',(settings['window_width']//2-380,settings['window_height']//2),cv2.FONT_HERSHEY_SIMPLEX,2,(10,250,10),2)
+    cv2.imshow('OpenCV Paint',frame)
+    key=cv2.waitKey(1)
+    if key & 0xff==ord('q'):
+        run=False
+    if key & 0xff==ord('s'):
+        saveimage()
+    if key & 0xff==ord('c'):
+        clearcanvas()
+cv2.destroyAllWindows()
+camera.release()
