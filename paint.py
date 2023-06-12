@@ -188,6 +188,8 @@ while run:
                 drawState='Standby'
             frame=findhands.drawLandmarks(frame, [handlandmarks[idx]],False)
             break
+    if settings['command_hand'] not in handstype:
+        drawState='Standby'
     for idx,handtype in enumerate(handstype):
         if handtype==settings['brush_hand']:
             cv2.circle(frame,(handlandmarks[idx][8][0],handlandmarks[idx][8][1]),brush_size,settings['color_swatches'][color],-1)
@@ -213,6 +215,24 @@ while run:
                     color='white'
                 else:
                     color='black'
+            #! brush size logic
+            if handlandmarks[idx][8][0]>0 and handlandmarks[idx][8][0]<60 and handlandmarks[idx][8][1]>60 and handlandmarks[idx][8][1]<settings['window_height']-60:
+                diff=(settings['window_height']-120)//6
+                if handlandmarks[idx][8][1]>60 and handlandmarks[idx][8][1]<60+diff:
+                    brush_size=5
+                elif handlandmarks[idx][8][1]>60+diff and handlandmarks[idx][8][1]<60+2*diff:
+                    brush_size=10
+                elif handlandmarks[idx][8][1]>60+2*diff and handlandmarks[idx][8][1]<60+3*diff:
+                    brush_size=15
+                elif handlandmarks[idx][8][1]>60+3*diff and handlandmarks[idx][8][1]<60+4*diff:
+                    brush_size=20
+                elif handlandmarks[idx][8][1]>60+4*diff and handlandmarks[idx][8][1]<60+5*diff:
+                    brush_size=25
+                else:
+                    brush_size=30
+            #! paint logic
+            if drawState=='Draw':
+                cv2.circle(canvas,(handlandmarks[idx][8][0],handlandmarks[idx][8][1]),brush_size,settings['color_swatches'][color],-1)
     frame=cv2.addWeighted(frame,.6,canvas,1,1)
     frame=preprocess(frame, drawState,fps)
     prevcanvas=canvas
